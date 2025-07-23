@@ -7,6 +7,7 @@ const sendEmail = require('../utils/sendEmail');
 // ✅ Register
 router.post('/register', async (req, res) => {
   const { name, email, password } = req.body;
+
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -15,6 +16,7 @@ router.post('/register', async (req, res) => {
 
     const user = new User({ name, email, password });
     await user.save();
+
     res.status(201).json({ message: "User registered successfully!" });
   } catch (err) {
     console.error("Registration error:", err);
@@ -25,6 +27,7 @@ router.post('/register', async (req, res) => {
 // ✅ Login
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
+
   try {
     const user = await User.findOne({ email });
     if (!user || user.password !== password) {
@@ -41,6 +44,7 @@ router.post('/login', async (req, res) => {
 // ✅ Forgot Password
 router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
+
   try {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "User not found." });
@@ -49,31 +53,33 @@ router.post('/forgot-password', async (req, res) => {
     user.resetToken = token;
     user.resetTokenExpiry = Date.now() + 3600000; // 1 hour
     await user.save();
-    console.log("✅ Token generated and saved:");
-console.log("Email:", email);
-console.log("Token:", token);
-console.log("Token expiry:", new Date(user.resetTokenExpiry).toLocaleString());
-    await sendEmail(email, token); // ✅ pass token only
-    console.log(`Reset link sent to ${email}: https://lailastreasures.netlify.app/reset-password.html?email=${encodeURIComponent(email)}&token=${token}`);
+
+    const resetLink = `https://lailastreasures.netlify.app/reset-password.html?email=${encodeURIComponent(email)}&token=${token}`;
+    const subject = "Reset Your Password - Laila's Treasures";
+    const html = `
+      <p>Hello ${user.name},</p>
+      <p>Click below to reset your password:</p>
+      <a href="${resetLink}" target="_blank">${resetLink}</a>
+      <p>This link will expire in 1 hour.</p>
+      <p>— Laila's Treasures</p>
+    `;
+
+    await sendEmail(email, subject, html);
+
+    // ✅ Corrected console.log with backticks
+    console.log(`Reset link sent to ${email}: ${resetLink}`);
+
     res.status(200).json({ message: "Password reset email sent." });
+
   } catch (err) {
     console.error("Forgot password error:", err);
     res.status(500).json({ message: "Error sending reset email." });
   }
 });
-
 // ✅ Reset Password
 router.post('/reset-password', async (req, res) => {
   const { email, token, newPassword } = req.body;
-  console.log("Reset password attempt:", { email, token });
-
-  const debugUser = await User.findOne({ email });
-  if (debugUser) {
-    console.log("Stored token:", debugUser.resetToken);
-    console.log("Stored expiry:", debugUser.resetTokenExpiry);
-    console.log("Current time:", Date.now());
-  }
-
+ console.log("Reset password attempt:",email,token);
   try {
     const user = await User.findOne({
       email,
@@ -82,7 +88,6 @@ router.post('/reset-password', async (req, res) => {
     });
 
     if (!user) {
-      console.log("User not found or token expired");
       return res.status(400).json({ message: "Invalid or expired token." });
     }
 
