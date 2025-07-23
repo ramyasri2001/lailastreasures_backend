@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
-async function sendResetEmail(to, subject, html) {
+async function sendEmail(to, subject, html) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
