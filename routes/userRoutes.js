@@ -49,7 +49,10 @@ router.post('/forgot-password', async (req, res) => {
     user.resetToken = token;
     user.resetTokenExpiry = Date.now() + 3600000; // 1 hour
     await user.save();
-
+    console.log("✅ Token generated and saved:");
+console.log("Email:", email);
+console.log("Token:", token);
+console.log("Token expiry:", new Date(user.resetTokenExpiry).toLocaleString());
     await sendEmail(email, token); // ✅ pass token only
     console.log(`Reset link sent to ${email}: https://lailastreasures.netlify.app/reset-password.html?email=${encodeURIComponent(email)}&token=${token}`);
     res.status(200).json({ message: "Password reset email sent." });
