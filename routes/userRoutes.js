@@ -83,7 +83,7 @@ router.post('/forgot-password', async (req, res) => {
 // ✅ Reset Password
 router.post('/reset-password', async (req, res) => {
   const { email, token, newPassword } = req.body;
-
+ console.log("Reset password attempt:",email,token);
   try {
     const user = await User.findOne({
       email,
