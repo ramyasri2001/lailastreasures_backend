@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
-async function sendEmail(to, token) {
+async function sendEmail(to, subject, html) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -9,17 +9,6 @@ async function sendEmail(to, token) {
       pass: process.env.EMAIL_PASS,
     },
   });
-
-  const resetLink = `https://lailastreasures.netlify.app/reset-password.html?email=${encodeURIComponent(to)}&token=${token}`;
-
-  const subject = "Reset Your Password - Laila's Treasures";
-  const html = `
-    <p>Hello,</p>
-    <p>Click below to reset your password:</p>
-    <a href="${resetLink}" target="_blank">${resetLink}</a>
-    <p>This link will expire in 1 hour.</p>
-    <p>— Laila's Treasures</p>
-  `;
 
   const mailOptions = {
     from: `"Laila's Treasures" <${process.env.EMAIL_USER}>`,
