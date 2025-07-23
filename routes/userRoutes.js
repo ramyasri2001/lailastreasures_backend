@@ -44,7 +44,6 @@ router.post('/login', async (req, res) => {
 // ✅ Forgot Password
 router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
-  console.log('Reset link sent to ${email}: ${resetLink}');
 
   try {
     const user = await User.findOne({ email });
@@ -56,6 +55,7 @@ router.post('/forgot-password', async (req, res) => {
     await user.save();
 
     const resetLink = `https://lailastreasures.netlify.app/reset-password.html?email=${encodeURIComponent(email)}&token=${token}`;
+    console.log("Reset link sent to ${email}:${resetLink}");
     const subject = "Reset Your Password - Laila's Treasures";
     const html = `
       <p>Hello ${user.name},</p>
