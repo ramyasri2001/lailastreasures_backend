@@ -10,7 +10,7 @@ async function sendResetEmail(to, token) {
     },
   });
 
-  const resetLink = `http://lailastreasures.netlify.app/reset-password.html?token=${token}`;
+  const resetLink = `https://lailastreasures.netlify.app/reset-password.html?token=${token}`;
 
   const mailOptions = {
     from: `"Laila's Treasures" <${process.env.EMAIL_USER}>`,
