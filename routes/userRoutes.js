@@ -62,16 +62,24 @@ router.post('/forgot-password', async (req, res) => {
 // ✅ Reset Password
 router.post('/reset-password', async (req, res) => {
   const { email, token, newPassword } = req.body;
-  console.log("Reset password attempt:", email, token);
+  console.log("Reset password attempt:", { email, token });
+
+  const debugUser = await User.findOne({ email });
+  if (debugUser) {
+    console.log("Stored token:", debugUser.resetToken);
+    console.log("Stored expiry:", debugUser.resetTokenExpiry);
+    console.log("Current time:", Date.now());
+  }
 
   try {
     const user = await User.findOne({
       email,
       resetToken: token,
-      resetTokenExpiry: { $gt: Date.now() },
+      resetTokenExpiry: { $gt: Date.now() }
     });
 
     if (!user) {
+      console.log("User not found or token expired");
       return res.status(400).json({ message: "Invalid or expired token." });
     }
 
