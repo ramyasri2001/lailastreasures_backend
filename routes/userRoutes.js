@@ -19,7 +19,6 @@ router.post('/register', async (req, res) => {
 
     res.status(201).json({ message: "User registered successfully!" });
   } catch (err) {
-    console.error("Registration error:", err);
     res.status(500).json({ message: "Error registering user." });
   }
 });
@@ -36,7 +35,6 @@ router.post('/login', async (req, res) => {
 
     res.status(200).json({ message: "Login successful", name: user.name });
   } catch (err) {
-    console.error("Login error:", err);
     res.status(500).json({ message: "Server error during login." });
   }
 });
@@ -65,21 +63,17 @@ router.post('/forgot-password', async (req, res) => {
     `;
 
     await sendEmail(email, subject, html);
-
-    // ✅ Corrected console.log with backticks
-    console.log(`Reset link sent to ${email}: ${resetLink}`);
-
     res.status(200).json({ message: "Password reset email sent." });
 
   } catch (err) {
-    console.error("Forgot password error:", err);
     res.status(500).json({ message: "Error sending reset email." });
   }
 });
+
 // ✅ Reset Password
 router.post('/reset-password', async (req, res) => {
   const { email, token, newPassword } = req.body;
- console.log("Reset password attempt:",email,token);
+
   try {
     const user = await User.findOne({
       email,
@@ -98,7 +92,6 @@ router.post('/reset-password', async (req, res) => {
 
     res.status(200).json({ message: "Password reset successful!" });
   } catch (err) {
-    console.error("Reset password error:", err);
     res.status(500).json({ message: "Error resetting password." });
   }
 });
