@@ -63,8 +63,9 @@ router.post('/forgot-password', async (req, res) => {
     `;
 
     await sendEmail(email, subject, html);
-    console.log(`✅ Reset token generated: ${token}`);
-    console.log(`🔗 Reset link sent: ${resetLink}`);
+    console.log(` Password reset email sent.`);
+    console.log(` Reset token generated: ${token}`);
+    console.log(` Reset link sent: ${resetLink}`);
     res.status(200).json({ message: "Password reset email sent." });
 
   } catch (err) {
