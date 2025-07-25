@@ -53,13 +53,13 @@ router.post('/forgot-password', async (req, res) => {
     await user.save();
 
     const resetLink = `https://lailastreasures.netlify.app/reset-password.html?email=${encodeURIComponent(email)}&token=${token}`;
-    const subject = "Reset Your Password - Laila's Treasures";
+    const subject = "Reset Your Password - Lailas Treasures";
     const html = `
       <p>Hello ${user.name},</p>
       <p>Click below to reset your password:</p>
       <a href="${resetLink}" target="_blank">${resetLink}</a>
       <p>This link will expire in 1 hour.</p>
-      <p>— Laila's Treasures</p>
+      <p>— Lailas Treasures</p>
     `;
 
     await sendEmail(email, subject, html);
