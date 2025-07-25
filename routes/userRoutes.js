@@ -85,9 +85,9 @@ router.post('/reset-password', async (req, res) => {
       resetTokenExpiry: { $gt: Date.now() }
     });
 
-    if (!user) {
-      return res.status(400).json({ message: "Invalid or expired token." });
-    }
+    // if (!user) {
+    //   return res.status(400).json({ message: "Invalid or expired token." });
+    // }
 
     user.password = newPassword;
     user.resetToken = undefined;
