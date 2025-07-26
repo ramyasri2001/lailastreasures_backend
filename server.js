@@ -30,7 +30,7 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use('/api/users', userRoutes);
 
 // ✅ Root endpoint (optional)
-app.get('/:', (req, res) => {
+app.get('/', (req, res) => {
   res.send('Laila\'s Treasures Backend is Running');
 });
 
