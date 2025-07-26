@@ -12,7 +12,7 @@ const corsOptions = {
   origin: 'https://lailastreasures.netlify.app', // your Netlify frontend
   credentials: true,
 };
-app.options('*',cors(corsOption));
+app.options('*',cors(corsOptions));
 app.use(cors(corsOptions));
 
 // ✅ Parse JSON
