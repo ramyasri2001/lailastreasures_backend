@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const userRoutes = require('./routes/userRoutes');
-
+const productRoutes = require('./routes/productRoutes');
 const app = express();
 
 // ✅ Enable CORS for Netlify frontend
@@ -28,6 +28,7 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // ✅ Routes
 app.use('/api/users', userRoutes);
+app.use('/api/users', productRoutes);
 
 // ✅ Root endpoint (optional)
 app.get('/', (req, res) => {
