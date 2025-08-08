@@ -7,6 +7,19 @@ const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const app = express();
 
+const allowedOrigins = [
+  'https://lailastreasures.netlify.app',
+  'https://localhost:3000'
+];
+app.use(cors({
+  origin: function (origin,callback){
+    if (!origin || allowedOrigins.includes(origin)){
+      callback(null,true);
+    } else{
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
 // ✅ Enable CORS for Netlify frontend
 const corsOptions = {
   origin: 'https://lailastreasures.netlify.app', // your Netlify frontend
