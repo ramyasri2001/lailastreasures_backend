@@ -28,7 +28,7 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // ✅ Routes
 app.use('/api/users', userRoutes);
-app.use('/api/users', productRoutes);
+app.use('/api/products', productRoutes);
 
 // ✅ Root endpoint (optional)
 app.get('/', (req, res) => {
