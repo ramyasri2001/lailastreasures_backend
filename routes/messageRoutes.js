@@ -10,7 +10,7 @@ router.post('/', async (req, res) => {
     const doc = await Message.create({ name, email, message, designs: designs || [] });
     res.status(201).json(doc);
   } catch (e) {
-    console.error('POST /api/messages failed:' e);
+    console.error('POST /api/messages failed:', e);
     res.status(500).json({ error: e.message });
   }
 });
