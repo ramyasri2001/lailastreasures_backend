@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
+const messageRoutes = require('./routes/messageRoutes');
 const app = express();
 
 const allowedOrigins = [
@@ -22,7 +23,14 @@ app.use(cors({
 }));
 // ✅ Enable CORS for Netlify frontend
 const corsOptions = {
-  origin: 'https://lailastreasures.netlify.app', // your Netlify frontend
+  origin: function (origin,cb) {
+    const allowed = [
+      'https://lailastreasures.netlify.app', // your Netlify frontend
+      'http://localhost:5500',
+    ];
+    if(!origin||allowed.includes(origin)) cb(null,true);
+    else cb(new Error('Not allowed by CORS'));
+  },
   credentials: true,
 };
 app.options('*',cors(corsOptions));
@@ -42,6 +50,7 @@ mongoose.connect(process.env.MONGO_URI, {
 // ✅ Routes
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/messages', messageRoutes);
 
 // ✅ Root endpoint (optional)
 app.get('/', (req, res) => {
