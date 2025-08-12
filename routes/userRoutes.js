@@ -3,6 +3,7 @@ const router = express.Router();
 const crypto = require('crypto');
 const User = require('../models/User');
 const sendEmail = require('../utils/sendEmail');
+const {setAuthCookie, clearAuthCookie} = require('../middleware/authCookie');
 
 // ✅ Register
 router.post('/register', async (req, res) => {
@@ -32,11 +33,24 @@ router.post('/login', async (req, res) => {
     if (!user || user.password !== password) {
       return res.status(401).json({ message: "Invalid email or password." });
     }
+    setAuthCookie(res, {id:user._id.toString(), name: user.name, email: user.email});
 
     res.status(200).json({ message: "Login successful", name: user.name });
   } catch (err) {
     res.status(500).json({ message: "Server error during login." });
   }
+});
+
+//Who am I 
+router.get('/me', (req,res) => {
+  const token = req.cookies?.lt_auth;
+  if (!token) return res.status(200).json({loggedIn:false});
+  res.status(200).json({loggedIn:true});
+});
+// ✅ Logout (clear cookie)
+router.post('/logout', (_req, res) => {
+  clearAuthCookie(res);
+  res.json({ ok: true });
 });
 
 // ✅ Forgot Password
