@@ -6,6 +6,7 @@ const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const messageRoutes = require('./routes/messageRoutes');
+const orderRoutes   = require('./routes/orderRoutes');
 const app = express();
 
 const allowedOrigins = [
@@ -51,6 +52,7 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/order', orderRoutes); 
 
 // ✅ Root endpoint (optional)
 app.get('/', (req, res) => {
