@@ -35,19 +35,25 @@ router.post('/login', async (req, res) => {
     }
 
     // sets httpOnly secure cookie named lt_auth
-    setAuthCookie(res, { id: user._id.toString(), name: user.name, email: user.email });
+    setAuthCookie(res, { id: user._id.toString(), name: user.name, email: user.email,isAdmin: !!user.isAdmin });
 
-    res.status(200).json({ message: "Login successful", name: user.name });
+    res.status(200).json({ message: "Login successful", name: user.name, isAdmin: !!user.isAdmin });
   } catch (err) {
     res.status(500).json({ message: "Server error during login." });
   }
 });
 
-// ✅ Who am I
-router.get('/me', (req, res) => {
+// Who am I → expose name/isAdmin (used by admin.html gate)
+router.get('/me', async (req, res) => {
   const token = req.cookies?.lt_auth;
-  if (!token) return res.status(200).json({ loggedIn: false });
-  res.status(200).json({ loggedIn: true });
+  if (!token) return res.status(200).json({ loggedIn:false });
+  try {
+    const jwt = require('jsonwebtoken');
+    const p = jwt.verify(token, process.env.JWT_SECRET);
+    return res.json({ loggedIn:true, name: p.name, isAdmin: !!p.isAdmin });
+  } catch {
+    return res.status(200).json({ loggedIn:false });
+  }
 });
 
 // ✅ Logout

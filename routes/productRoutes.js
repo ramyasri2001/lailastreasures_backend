@@ -1,13 +1,14 @@
 const express = require('express');
 const Product = require('../models/products');
+const { requireAdmin } = require('../middleware/authCookie');
 const router = express.Router();
 
-// Create / Update
-router.post('/', async (req, res) => {
+// CREATE/UPDATE (admin only)
+router.post('/', requireAdmin, async (req, res) => {
   try {
     const { name, designKey, category, material, price, img } = req.body;
     const doc = await Product.findOneAndUpdate(
-      { name, material, category },                  // unique per material
+      { name, material, category },
       { name, designKey, category, material, price, img },
       { new: true, upsert: true }
     );
@@ -15,7 +16,7 @@ router.post('/', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// List with optional filters
+// LIST (public)
 router.get('/', async (req, res) => {
   try {
     const { category, name, material, designKey } = req.query;
@@ -29,8 +30,8 @@ router.get('/', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// Delete one
-router.delete('/:id', async (req, res) => {
+// DELETE (admin only)
+router.delete('/:id', requireAdmin, async (req, res) => {
   try {
     await Product.findByIdAndDelete(req.params.id);
     res.json({ ok: true });

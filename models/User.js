@@ -1,25 +1,15 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  resetToken:{
-    type: String
-  },
-resetTokenExpiry:{
-    type: Date
-  }
+  name:  { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+
+  // NEW: mark which account is allowed into /admin
+  isAdmin: { type: Boolean, default: false },
+
+  resetToken: String,
+  resetTokenExpiry: Date
 });
 
 module.exports = mongoose.model('User', userSchema);
