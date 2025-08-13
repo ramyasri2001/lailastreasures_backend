@@ -33,7 +33,9 @@ router.post('/login', async (req, res) => {
     if (!user || user.password !== password) {
       return res.status(401).json({ message: "Invalid email or password." });
     }
-    setAuthCookie(res, {id:user._id.toString(), name: user.name, email: user.email});
+
+    // sets httpOnly secure cookie named lt_auth
+    setAuthCookie(res, { id: user._id.toString(), name: user.name, email: user.email });
 
     res.status(200).json({ message: "Login successful", name: user.name });
   } catch (err) {
@@ -41,13 +43,14 @@ router.post('/login', async (req, res) => {
   }
 });
 
-//Who am I 
-router.get('/me', (req,res) => {
+// ✅ Who am I
+router.get('/me', (req, res) => {
   const token = req.cookies?.lt_auth;
-  if (!token) return res.status(200).json({loggedIn:false});
-  res.status(200).json({loggedIn:true});
+  if (!token) return res.status(200).json({ loggedIn: false });
+  res.status(200).json({ loggedIn: true });
 });
-// ✅ Logout (clear cookie)
+
+// ✅ Logout
 router.post('/logout', (_req, res) => {
   clearAuthCookie(res);
   res.json({ ok: true });
