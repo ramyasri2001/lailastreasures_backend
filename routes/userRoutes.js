@@ -44,17 +44,17 @@ router.post('/login', async (req, res) => {
 });
 
 // Who am I → expose name/isAdmin (used by admin.html gate)
-router.get('/me', async (req, res) => {
-  const token = req.cookies?.lt_auth;
-  if (!token) return res.status(200).json({ loggedIn:false });
-  try {
-    const jwt = require('jsonwebtoken');
-    const p = jwt.verify(token, process.env.JWT_SECRET);
-    return res.json({ loggedIn:true, name: p.name, isAdmin: !!p.isAdmin });
-  } catch {
-    return res.status(200).json({ loggedIn:false });
-  }
+router.get('/me', requireAuth, async (req, res) => {
+  // req.user comes from the cookie/JWT
+  res.json({
+    loggedIn: true,
+    id: req.user.id,
+    name: req.user.name,
+    email: req.user.email,
+    isAdmin: !!req.user.isAdmin,
+  });
 });
+
 
 // ✅ Logout
 router.post('/logout', (_req, res) => {

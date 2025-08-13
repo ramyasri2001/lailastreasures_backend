@@ -24,8 +24,8 @@ const allowedOrigins = [
 app.use(cors({
   origin(origin, cb) {
     // allow same-origin & tools that send no origin (curl, health checks)
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-    cb(new Error('Not allowed by CORS'));
+    const ok = !origin ||['https://lailastreasures.netlify.app','http:localhost:5500']
+    cb(ok? null: new Error('Not allowed by CORS'),ok);
   },
   credentials: true, // allow cookies/credentials
   methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],

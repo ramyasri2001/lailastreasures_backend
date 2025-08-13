@@ -1,7 +1,8 @@
 // routes/orderRoutes.js
 const express = require('express');
 const DesignOrder = require('../models/DesignOrder');
-const Product = require('../models/products'); // you already have this
+const Product = require('../models/products'); 
+const { requireAdmin } = require('../middleware/authCookie');
 const router = express.Router();
 
 /**
@@ -38,7 +39,7 @@ router.get('/', async (req, res) => {
  * PUT /api/order
  * Body: { category: string, order: string[] }  // array of designKeys
  */
-router.put('/', async (req, res) => {
+router.put('/',require async (req, res) => {
   try {
     const { category, order } = req.body;
     if (!category || !Array.isArray(order)) {
