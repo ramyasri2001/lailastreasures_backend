@@ -24,7 +24,7 @@ app.use(cors({
   origin(origin, cb) {
     // allow same-origin & tools that send no origin (curl, health checks)
     if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-    return cb(new Error('Not allowed by CORS'));
+    cb(new Error('Not allowed by CORS'));
   },
   credentials: true, // allow cookies/credentials
   methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
