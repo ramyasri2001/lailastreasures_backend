@@ -1,36 +1,37 @@
-// routes/cartRoutes.js
 const express = require('express');
-const router = express.Router();
 const CartItem = require('../models/CartItem');
-const { requireAuth } = require('../middleware/authCookie');
+const requireUser = require('../middleware/requireUser');
+const router = express.Router();
 
-// GET my cart
-router.get('/', requireAuth, async (req, res) => {
+// Get my cart
+router.get('/', requireUser, async (req, res) => {
   const items = await CartItem.find({ userId: req.user.id }).sort({ createdAt: -1 });
   res.json(items);
 });
 
-// ADD item
-router.post('/', requireAuth, async (req, res) => {
-  const body = req.body || {};
-  const doc = await CartItem.create({
+// Add to cart
+router.post('/', requireUser, async (req, res) => {
+  const { name, img, material, top, bottom, selectedTop, selectedBottom, price } = req.body;
+  const item = await CartItem.create({
     userId: req.user.id,
-    name: body.name,
-    img: body.img,
-    material: body.material,
-    top: body.top || 0,
-    bottom: body.bottom || 0,
-    selectedTop: body.selectedTop || [],
-    selectedBottom: body.selectedBottom || [],
-    price: body.price || 0
+    name, img, material, top, bottom,
+    selectedTop: selectedTop || [],
+    selectedBottom: selectedBottom || [],
+    price: Number(price) || 0
   });
-  res.status(201).json(doc);
+  res.status(201).json(item);
 });
 
-// DELETE one
-router.delete('/:id', requireAuth, async (req, res) => {
+// Remove a single item
+router.delete('/:id', requireUser, async (req, res) => {
   const { id } = req.params;
   await CartItem.deleteOne({ _id: id, userId: req.user.id });
+  res.json({ ok: true });
+});
+
+// Clear entire cart
+router.delete('/', requireUser, async (req, res) => {
+  await CartItem.deleteMany({ userId: req.user.id });
   res.json({ ok: true });
 });
 

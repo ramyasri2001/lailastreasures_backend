@@ -8,6 +8,7 @@ const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const orderRoutes   = require('./routes/orderRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 
 const app = express();
 
@@ -50,7 +51,8 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use('/api/users',    userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/messages', messageRoutes);
-app.use('/api/order',    orderRoutes);  // keep as you have now
+app.use('/api/order',    orderRoutes);  
+app.use('/api/cart', cartRoutes);
 
 /* ---------- Root ---------- */
 app.get('/', (_req, res) => {
