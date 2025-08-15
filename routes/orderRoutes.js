@@ -1,16 +1,19 @@
 // routes/orderRoutes.js
 const express = require('express');
-const DesignOrder = require('../models/DesignOrder');
-const Product = require('../models/products'); 
-const { requireAdmin } = require('../middleware/authCookie');
 const router = express.Router();
+
+const DesignOrder = require('../models/DesignOrder');
+const Product = require('../models/products');
+const { requireAuth } = require('../middleware/authCookie'); // ⬅️ add this
 
 /**
  * GET /api/order?category=gold-grillz.html
  * Returns { category, order: [designKey, ...] }
- * If no order doc exists yet, create one (seeded by name ASC)
+ * If no order doc exists yet, seed by name ASC.
+ *
+ * If you want GET to be public, remove `requireAuth` on this route.
  */
-router.get('/', async (req, res) => {
+router.get('/', requireAuth, async (req, res) => {
   try {
     const { category } = req.query;
     if (!category) return res.status(400).json({ error: 'category is required' });
@@ -31,6 +34,7 @@ router.get('/', async (req, res) => {
     }
     res.json(doc);
   } catch (e) {
+    console.error('GET /api/order error:', e);
     res.status(500).json({ error: e.message });
   }
 });
@@ -38,8 +42,9 @@ router.get('/', async (req, res) => {
 /**
  * PUT /api/order
  * Body: { category: string, order: string[] }  // array of designKeys
+ * Admin-only.
  */
-router.put('/',require async (req, res) => {
+router.put('/', requireAuth, async (req, res) => {
   try {
     const { category, order } = req.body;
     if (!category || !Array.isArray(order)) {
@@ -53,6 +58,7 @@ router.put('/',require async (req, res) => {
     );
     res.json(doc);
   } catch (e) {
+    console.error('PUT /api/order error:', e);
     res.status(500).json({ error: e.message });
   }
 });
