@@ -3,7 +3,7 @@ const router = express.Router();
 const crypto = require('crypto');
 const User = require('../models/User');
 const sendEmail = require('../utils/sendEmail');
-const {setAuthCookie, clearAuthCookie} = require('../middleware/authCookie');
+const {setAuthCookie, clearAuthCookie, requireAuth} = require('../middleware/authCookie');
 
 // ✅ Register
 router.post('/register', async (req, res) => {
