@@ -35,7 +35,12 @@ router.post('/login', async (req, res) => {
     }
 
     // sets httpOnly secure cookie named lt_auth
-    setAuthCookie(res, { id: user._id.toString(), name: user.name, email: user.email,isAdmin: !!user.isAdmin });
+    setAuthCookie(res, { 
+      id: user._id.toString(), 
+      name: user.name, 
+      email: user.email,
+      isAdmin: !!user.isAdmin,
+     });
 
     res.status(200).json({ message: "Login successful", name: user.name, isAdmin: !!user.isAdmin });
   } catch (err) {
