@@ -48,11 +48,11 @@ mongoose.connect(process.env.MONGO_URI, {
 .catch(err => console.error('MongoDB connection error:', err));
 
 /* ---------- Routes ---------- */
-app.use('/api/users',    userRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/messages', messageRoutes);
-app.use('/api/order',    orderRoutes);  
-app.use('/api/cart', cartRoutes);
+app.use('/api/users',  require("./routes/userRoutes"));
+app.use('/api/products', require("./routes/productRoutes"));
+app.use('/api/messages', require("./routes/messageRoutes"));
+app.use('/api/order',    require ("./routes/orderRoutes"));  
+app.use('/api/cart', require("./routes/cartRoutes"));
 
 /* ---------- Root ---------- */
 app.get('/', (_req, res) => {
