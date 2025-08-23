@@ -4,7 +4,7 @@ const router = express.Router();
 
 const DesignOrder = require('../models/DesignOrder');
 const Product = require('../models/products');
-const { requireAuth } = require('../middleware/authCookie'); // ⬅️ add this
+const { requireAuth, requireAdmin } = require('../middleware/authCookie');
 
 /**
  * GET /api/order?category=gold-grillz.html
@@ -44,7 +44,7 @@ router.get('/', requireAuth, async (req, res) => {
  * Body: { category: string, order: string[] }  // array of designKeys
  * Admin-only.
  */
-router.put('/', requireAuth, async (req, res) => {
+router.put('/', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { category, order } = req.body;
     if (!category || !Array.isArray(order)) {

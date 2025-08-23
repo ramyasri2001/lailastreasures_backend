@@ -1,10 +1,10 @@
 const express = require('express');
 const Product = require('../models/products');
-const { requireAdmin } = require('../middleware/authCookie');
+const { requireAuth, requireAdmin } = require('../middleware/authCookie');
 const router = express.Router();
 
 // CREATE/UPDATE (admin only)
-router.post('/', requireAdmin, async (req, res) => {
+router.post('/', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { name, designKey, category, material, price, img } = req.body;
     const doc = await Product.findOneAndUpdate(
@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
 });
 
 // DELETE (admin only)
-router.delete('/:id', requireAdmin, async (req, res) => {
+router.delete('/:id', requireAuth, requireAdmin, async (req, res) => {
   try {
     await Product.findByIdAndDelete(req.params.id);
     res.json({ ok: true });
