@@ -9,11 +9,8 @@ const productRoutes = require('./routes/productRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const orderRoutes   = require('./routes/orderRoutes');
 const cartRoutes = require('./routes/cartRoutes');
-const devMakeAdmin = require('./routes/devMakeAdmin');
 
 const app = express();
-
-app.use('/api',devMakeAdmin);
 
 /* ---------- Trust proxy (needed for secure cookies on Render/Netlify) ---------- */
 app.set('trust proxy', 1);
