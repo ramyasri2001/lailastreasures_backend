@@ -1,63 +1,58 @@
+// routes/sectionRoutes.js
 const express = require('express');
-const router = express.Router();
 const Section = require('../models/Section');
-const { requireAdmin } = require('../middleware/authCookie');
+const { requireAuth, requireAdmin } = require('../middleware/authCookie');
 
-// PUBLIC: list visible sections (optionally by location)
-router.get('/', async (req, res) => {
+const router = express.Router();
+
+/** List sections (public read) */
+router.get('/', async (_req, res) => {
   try {
-    const { location, all } = req.query;
-    const q = all === '1' ? {} : { isVisible: true };
-    if (location) q.location = location;
-    const sections = await Section.find(q).sort({ sortOrder: 1, title: 1 });
-    res.json(sections);
-  } catch (e) { res.status(500).json({ error: e.message }); }
+    const rows = await Section.find({}).sort({ position: 1, name: 1 });
+    res.json(rows);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
-// PUBLIC: get by slug (even hidden—if you prefer restrict, add isVisible filter)
+/** Get single section by slug (optional helper) */
 router.get('/:slug', async (req, res) => {
   try {
-    const s = await Section.findOne({ slug: req.params.slug });
-    if (!s) return res.status(404).json({ error: 'Not found' });
-    res.json(s);
-  } catch (e) { res.status(500).json({ error: e.message }); }
+    const row = await Section.findOne({ slug: req.params.slug });
+    if (!row) return res.status(404).json({ error: 'Not found' });
+    res.json(row);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
-// ADMIN: create or update (upsert by slug)
-router.post('/', requireAdmin, async (req, res) => {
+/** Create/Update section (admin only) */
+router.post('/', requireAuth, requireAdmin, async (req, res) => {
   try {
-    const { slug, title, subtitle, heroImage, location, productFilter, defaultMaterial, isVisible } = req.body;
-    if (!slug || !title) return res.status(400).json({ error: 'slug and title required' });
+    const { slug, name, image, position } = req.body;
+    if (!slug || !name) return res.status(400).json({ error: 'slug and name are required' });
 
     const doc = await Section.findOneAndUpdate(
       { slug },
-      { slug, title, subtitle, heroImage, location, productFilter, defaultMaterial, isVisible },
-      { new: true, upsert: true }
+      { slug, name, image: image || '', position: Number(position) || 0 },
+      { new: true, upsert: true, runValidators: true }
     );
     res.json(doc);
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) {
+    // duplicate slug gives a 11000 Mongo error
+    if (e.code === 11000) return res.status(409).json({ error: 'Slug already exists' });
+    res.status(500).json({ error: e.message });
+  }
 });
 
-// ADMIN: delete
-router.delete('/:slug', requireAdmin, async (req, res) => {
+/** Delete section (admin only) */
+router.delete('/:id', requireAuth, requireAdmin, async (req, res) => {
   try {
-    await Section.findOneAndDelete({ slug: req.params.slug });
+    await Section.findByIdAndDelete(req.params.id);
     res.json({ ok: true });
-  } catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-// ADMIN: reorder (set sortOrder by array of slugs)
-router.put('/reorder', requireAdmin, async (req, res) => {
-  try {
-    const { slugs } = req.body; // ['gold-grillz','silver-grillz',...]
-    if (!Array.isArray(slugs)) return res.status(400).json({ error: 'slugs[] required' });
-
-    const bulk = slugs.map((slug, i) => ({
-      updateOne: { filter: { slug }, update: { sortOrder: i } }
-    }));
-    if (bulk.length) await Section.bulkWrite(bulk);
-    res.json({ ok: true });
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 module.exports = router;
