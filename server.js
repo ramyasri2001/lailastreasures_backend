@@ -10,6 +10,7 @@ const messageRoutes = require('./routes/messageRoutes');
 const orderRoutes   = require('./routes/orderRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const sectionRoutes = require('./routes/sectionRoutes');
 
 
 const app = express();
@@ -56,6 +57,7 @@ app.use('/api/messages', require("./routes/messageRoutes"));
 app.use('/api/order',    require ("./routes/orderRoutes"));  
 app.use('/api/cart', require("./routes/cartRoutes"));
 app.use('/api/chat', require("./routes/chatRoutes"));
+app.use('/api/sections', require("./routes/sectionRoutes"));
 
 /* ---------- Root ---------- */
 app.get('/', (_req, res) => {
