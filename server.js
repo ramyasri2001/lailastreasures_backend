@@ -9,6 +9,8 @@ const productRoutes = require('./routes/productRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const orderRoutes   = require('./routes/orderRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const chatRoutes = require('./routes/chatRoutes');
+
 
 const app = express();
 
@@ -53,6 +55,7 @@ app.use('/api/products', require("./routes/productRoutes"));
 app.use('/api/messages', require("./routes/messageRoutes"));
 app.use('/api/order',    require ("./routes/orderRoutes"));  
 app.use('/api/cart', require("./routes/cartRoutes"));
+app.use('/api/chat', require("./routes/chatRoutes"));
 
 /* ---------- Root ---------- */
 app.get('/', (_req, res) => {

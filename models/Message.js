@@ -1,14 +1,10 @@
-// models/Message.js
 const mongoose = require('mongoose');
 
-const MessageSchema = new mongoose.Schema(
-  {
-    name:   { type: String, required: true },
-    email:  { type: String, required: true },
-    message:{ type: String, required: true },
-    designs:{ type: Array,  default: [] }, // snapshot of saved designs (optional)
-  },
-  { timestamps: true }
-);
+const messageSchema = new mongoose.Schema({
+  conversation: { type: mongoose.Schema.Types.ObjectId, ref: 'Conversation', required: true, index: true },
+  sender:       { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  text:         { type: String, required: true, trim: true },
+  readAt:       { type: Date },
+}, { timestamps: true });
 
-module.exports = mongoose.model('Message', MessageSchema);
+module.exports = mongoose.model('Message', messageSchema);
